@@ -16,7 +16,7 @@
 
 using System;
 using UnityEngine;
-using Toolbar;
+using KSPCalendar.Toolbar;
 
 namespace KSPCalendar
 {

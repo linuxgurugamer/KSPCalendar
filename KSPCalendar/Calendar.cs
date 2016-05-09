@@ -66,7 +66,7 @@
 
 using System;
 using UnityEngine;
-using Toolbar;
+using KSPCalendar.Toolbar;
 
 namespace KSPCalendar
 {
@@ -81,8 +81,6 @@ namespace KSPCalendar
             initToolbarButtons ();
             loadConfig ();
             //loadTextures ();
-
-            RenderingManager.AddToPostDrawQueue (0, OnGUI);
         }
 
         /// <summary>
@@ -112,7 +110,16 @@ namespace KSPCalendar
         public void OnDestroy()
         {
             saveConfig (true);
-            tbButton.Destroy ();
+            if (tbButton != null)
+            {
+                tbButton.Destroy ();
+                tbButton = null;
+            }
+            if (tbButtonCfg != null)
+            {
+                tbButtonCfg.Destroy ();
+                tbButtonCfg = null;
+            }
         }
     }
 }
