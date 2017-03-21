@@ -70,7 +70,7 @@ using KSPCalendar.Toolbar;
 
 namespace KSPCalendar
 {
-    [KSPAddon(KSPAddon.Startup.EveryScene, false)]
+    [KSPAddon(KSPAddon.Startup.AllGameScenes, true)]
     public partial class Calendar : MonoBehaviour
     {
         /// <summary>
@@ -78,8 +78,9 @@ namespace KSPCalendar
         /// </summary>
         public void Awake()
         {
+            loadConfig();
             initToolbarButtons ();
-            loadConfig ();
+            DontDestroyOnLoad(this);
             //loadTextures ();
         }
 
@@ -110,11 +111,8 @@ namespace KSPCalendar
         public void OnDestroy()
         {
             saveConfig (true);
-            if (tbButton != null)
-            {
-                tbButton.Destroy ();
-                tbButton = null;
-            }
+            removeLauncherButtons();
+
             if (tbButtonCfg != null)
             {
                 tbButtonCfg.Destroy ();

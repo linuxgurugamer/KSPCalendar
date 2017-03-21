@@ -51,10 +51,10 @@ namespace KSPCalendar
             }
             strConfigInitialDateTime = dtKerbinInitial.ToString (strDateTimeFormat);
 
-            isMinimalisticView = Config.GetValue<bool> ("MinimalisticView", false);
-            isKerbinTimeScale = Config.GetValue<bool> ("UseKerbinTimeScale", false);
-            doOverrideMETDisplay = Config.GetValue<bool> ("OverrideMETDisplay", false);
-            doShowSystemTime = Config.GetValue<bool> ("ShowSystemTime", false);
+            //isMinimalisticView = Config.GetValue<bool> ("MinimalisticView", false);
+            //isKerbinTimeScale = Config.GetValue<bool> ("UseKerbinTimeScale", false);
+           // doOverrideMETDisplay = Config.GetValue<bool> ("OverrideMETDisplay", false);
+            //doShowSystemTime = Config.GetValue<bool> ("ShowSystemTime", false);
             doShowCalendarWindow = Config.GetValue ("ShowCalendar", false);
         }
 
@@ -86,10 +86,10 @@ namespace KSPCalendar
             Config.SetValue ("MiniCalendarWindowPosition", posMiniCalendarWindow);
             Config.SetValue ("InitialKerbinDateTime", dtKerbinInitial.ToString (strDateTimeFormat));
             Config.SetValue ("DateTimeFormat", strDateTimeFormat);
-            Config.SetValue ("OverrideMETDisplay", doOverrideMETDisplay);
-            Config.SetValue ("MinimalisticView", isMinimalisticView);
-            Config.SetValue ("UseKerbinTimeScale", isKerbinTimeScale);
-            Config.SetValue ("ShowSystemTime", doShowSystemTime);
+            //Config.SetValue ("OverrideMETDisplay", doOverrideMETDisplay);
+            //Config.SetValue ("MinimalisticView", isMinimalisticView);
+            //Config.SetValue ("UseKerbinTimeScale", isKerbinTimeScale);
+            //Config.SetValue ("ShowSystemTime", doShowSystemTime);
             Config.SetValue ("ShowCalendar", doShowCalendarWindow);
 
             Config.save ();
@@ -114,7 +114,7 @@ namespace KSPCalendar
         {
             double dblUniversalTime = Planetarium.GetUniversalTime ();
 
-            if (isKerbinTimeScale) {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().isKerbinTimeScale) {
                 dtKerbinInitial = dtKerbinInitial.Date;
                 dblUniversalTime = (dblUniversalTime + 11700.0 - ((21600.0 / 9203544.6) * dblUniversalTime)) * 4;
             }

@@ -17,32 +17,33 @@
 using System;
 using System.Globalization;
 using UnityEngine;
-
+using KSP.UI.Screens.Flight;
+using METDisplay = KSP.UI.Screens.Flight.METDisplay;
 namespace KSPCalendar
 {
     public partial class Calendar
     {
-        private bool isMinimalisticView = false;
-        private bool isKerbinTimeScale = false;
-        private bool doShowConfigWindow = false;
-        private bool doOverrideMETDisplay = false;
+       // private bool isMinimalisticView = false;
+        //private bool isKerbinTimeScale = false;
+        //private bool doShowConfigWindow = false;
+       // private bool doOverrideMETDisplay = false;
         private bool doShowCalendarWindow = false;
-        private bool doShowSystemTime = false;
+        //private bool doShowSystemTime = false;
         private bool doDrawDefaultWindow = true;
 
         private Rect posCalendarWindow;
         private Rect posMiniCalendarWindow;
         private Rect posConfigWindow;
 
-        private FlightUIController flightUICtrl;
+        // private FlightGlobals flightUICtrl;
 
-        /* WIP
-        private TimeWarp mTimewarpObject;
-        private int metState = 0;
-        */
+/* WIP
+private TimeWarp mTimewarpObject;
+private int metState = 0;
+*/
 
-        // ****
-
+// ****
+#if false
         /// <summary>
         /// Draws an overlay over the Mission Time in the TimeWarp Panel
         /// </summary>
@@ -54,32 +55,40 @@ namespace KSPCalendar
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
-
+#endif
         /// <summary>
         /// Draws all windows depending on settings.
         /// </summary>
         private void drawWindows()
         {
-            if (doShowConfigWindow)
-                posConfigWindow = GUILayout.Window (3, posConfigWindow, drawSettingsWindow, "Settings", styleConfigWindow);
+            //if (doShowConfigWindow)
+            //    posConfigWindow = GUILayout.Window (3, posConfigWindow, drawSettingsWindow, "Settings", styleConfigWindow);
 
             if (!doShowCalendarWindow)
                 return;
 
             // Hide calendar window from Flight Scene, if Override MET option is enabled
-            if (doOverrideMETDisplay && HighLogic.LoadedSceneIsFlight) {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().doOverrideMETDisplay && HighLogic.LoadedSceneIsFlight) {
                 doDrawDefaultWindow = false;
-                flightUICtrl = FlightUIController.fetch;
-                if (flightUICtrl == null)
-                    return;
+#if false
+                //flightUICtrl = FlightGlobals.fetch;
+                //if (flightUICtrl == null)
+                //    return;
 
                 getCurrentKerbinDateTime ();
-                flightUICtrl.met.text = dtKerbinCurrent.ToString (strDateTimeFormat);
+                METDisplay met = GameObject.FindObjectOfType<METDisplay>();
+                if (met != null)
+                {
+                    met.text.text = dtKerbinCurrent.ToString(strDateTimeFormat);
+                   // Debug.Log("KSPCalendar, text: " + met.text.text);
+                }
+//                flightUICtrl.met.text = dtKerbinCurrent.ToString (strDateTimeFormat);
+#endif
             } else
                 doDrawDefaultWindow = true;
 
-            if (doDrawDefaultWindow || doShowSystemTime) {
-                if (isMinimalisticView)
+            if (doDrawDefaultWindow || HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().doShowSystemTime) {
+                if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().isMinimalisticView)
                     posMiniCalendarWindow = GUILayout.Window (1, posMiniCalendarWindow, drawMiniCalendarWindow, "", styleMinimalisticLabel);
                 else
                     posCalendarWindow = GUILayout.Window (2, posCalendarWindow, drawCalendarWindow, "Kerbin Calendar", styleCalendarWindow);
@@ -140,6 +149,23 @@ namespace KSPCalendar
                 }
         } */
 
+        private void LateUpdate()
+        {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().doOverrideMETDisplay && HighLogic.LoadedSceneIsFlight)
+            {
+                getCurrentKerbinDateTime();
+                METDisplay met = GameObject.FindObjectOfType<METDisplay>();
+                if (met != null)
+                {
+                    met.text.text = dtKerbinCurrent.ToString(strDateTimeFormat);
+                    Debug.Log("met.text.test = " + dtKerbinCurrent.ToString(strDateTimeFormat));
+                }
+                //                flightUICtrl.met.text = dtKerbinCurrent.ToString (strDateTimeFormat);
+            }
+            else
+                doDrawDefaultWindow = true;
+        }
+
         /// <summary>
         /// Draws the calendar main window.
         /// </summary>
@@ -152,7 +178,7 @@ namespace KSPCalendar
 
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            if (!doDrawDefaultWindow && doShowSystemTime) {
+            if (!doDrawDefaultWindow && HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().doShowSystemTime) {
                 GUILayout.Box ("System Date", styleBoxWhite);
                 GUILayout.Box (dtSystemTime.ToString (strDateTimeFormat), styleBoxYellow);
             } else {
@@ -164,7 +190,7 @@ namespace KSPCalendar
 
             // ****
 
-            if (doDrawDefaultWindow && doShowSystemTime) {
+            if (doDrawDefaultWindow && HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().doShowSystemTime) {
                 GUILayout.BeginVertical ();
                 GUILayout.BeginHorizontal ();
                 GUILayout.Box ("System Date", styleBoxWhite);
@@ -191,13 +217,13 @@ namespace KSPCalendar
             
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            if (!doDrawDefaultWindow && doShowSystemTime) {
+            if (!doDrawDefaultWindow && HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().doShowSystemTime) {
                 GUILayout.Box (dtSystemTime.ToString (strDateTimeFormat), styleBoxYellow);
             } else {
                 GUILayout.Box (dtKerbinCurrent.ToString (strDateTimeFormat), styleBoxYellow);
             }
 
-            if (doDrawDefaultWindow && doShowSystemTime) {
+            if (doDrawDefaultWindow && HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().doShowSystemTime) {
                 GUILayout.Box (dtSystemTime.ToString (strDateTimeFormat), styleBoxYellow);
             }
             GUILayout.EndHorizontal();
@@ -205,7 +231,7 @@ namespace KSPCalendar
 
             GUI.DragWindow();
         }
-
+#if false
         /// <summary>
         /// Draws the settings window.
         /// </summary>
@@ -281,5 +307,6 @@ namespace KSPCalendar
             strConfigInitialDateTime = dtKerbinInitial.ToString(strDateTimeFormat);
             doShowConfigWindow = !doShowConfigWindow;
         }
+#endif
     }
 }
