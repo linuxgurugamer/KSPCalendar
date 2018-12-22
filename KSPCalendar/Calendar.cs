@@ -66,7 +66,7 @@
 
 using System;
 using UnityEngine;
-using KSPCalendar.Toolbar;
+//using KSPCalendar.Toolbar;
 
 namespace KSPCalendar
 {
@@ -112,12 +112,6 @@ namespace KSPCalendar
         {
             saveConfig (true);
             removeLauncherButtons();
-
-            if (tbButtonCfg != null)
-            {
-                tbButtonCfg.Destroy ();
-                tbButtonCfg = null;
-            }
         }
     }
 }

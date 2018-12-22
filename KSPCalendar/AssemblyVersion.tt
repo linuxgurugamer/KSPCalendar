@@ -27,7 +27,7 @@
 	int i2 = 0;
 	string s;
 
-	string versionfile =  @"D:\Users\jbb\github\KSPCalendar\GameData\KSPCalendar\KSPCalendar.version";
+	string versionfile =  @"D:\Users\jbb\github\KSPCalendar\KSPCalendar.version";
 	if (!File.Exists(versionfile))
 	{
 		Write("File: " + versionfile + " missing\n");		

@@ -15,6 +15,7 @@
 /// </summary>
 
 using System;
+using System.IO;
 using System.Globalization;
 using KSP.IO;
 using UnityEngine;
@@ -23,55 +24,64 @@ namespace KSPCalendar
 {
     public partial class Calendar
     {
+        private const string CONFIGPATH = "GameData/KSPCalendar/PluginData/";
+        private const string CONFIGFILE = "KSPCalendar.cfg";
 
+
+        static public string GetConfigFileName
+        {
+            get
+            {
+                string s = Path.Combine(KSPUtil.ApplicationRootPath, CONFIGPATH).Replace('\\', '/') + "/" + CONFIGFILE;
+                return s;
+            }
+        }
+   
+        Rect StringToRect(string s)
+        {
+            char[] delimiterChars = { ' ', ',' };
+
+            
+            string[] sar = s.Split(delimiterChars);
+            Rect rect = default(Rect);
+            float x;
+            if (float.TryParse(sar[0], out x))
+            rect.x = x;
+            if (float.TryParse(sar[1], out x))
+            rect.y = x;
+            if (float.TryParse(sar[2], out x))
+            rect.width = x;
+            if (float.TryParse(sar[3], out x))
+            rect.height = x;
+            return rect;
+        }
+        string RectToString(Rect r)
+        {
+            return r.x.ToString() + "," + r.y.ToString() + "," + r.width.ToString() + "," + r.height.ToString();
+        }
         /// <summary>
         /// Loads the saved config settings.
         /// </summary>
         public void loadConfig()
         {
-            PluginConfiguration Config = PluginConfiguration.CreateForType<Calendar> ();
-            Config.load ();
-
-            double configPluginVersion = Config.GetValue<double> ("PluginVersion");
-            if (configPluginVersion != dblPluginVersion)
-                return;
-
-            posCalendarWindow = Config.GetValue<Rect> ("CalendarWindowPosition");
-            posMiniCalendarWindow = Config.GetValue<Rect> ("MiniCalendarWindowPosition");
-
-            String strSavedDateTimeFormat = Config.GetValue<String> ("DateTimeFormat");
-            if (strSavedDateTimeFormat != null) {
-                strDateTimeFormat = strSavedDateTimeFormat;
+            if (System.IO.File.Exists(GetConfigFileName))
+            {
+                ConfigNode file = ConfigNode.Load(GetConfigFileName);
+                if (file != null)
+                {
+                    ConfigNode node = file.GetNode("KSPCalendar");
+                    string s = "";
+                    node.TryGetValue("CalendarWindowPosition", ref s);
+                    posCalendarWindow = StringToRect(s);
+                    node.TryGetValue("MiniCalendarWindowPosition", ref s);
+                    posMiniCalendarWindow = StringToRect(s);
+                    s = "";
+                    node.TryGetValue("InitialKerbinDateTime", ref s);
+                    dtKerbinInitial = DateTime.ParseExact(s, strDateTimeFormat, CultureInfo.InvariantCulture);
+                    node.TryGetValue("DateTimeFormat", ref strDateTimeFormat);
+                    node.TryGetValue("ShowCalendar", ref doShowCalendarWindow);
+                }
             }
-            strConfigDateTimeFormat = strDateTimeFormat;
-            
-            String strSavedKerbinDateTime = Config.GetValue<String> ("InitialKerbinDateTime");
-            if (strSavedKerbinDateTime != null) {
-                dtKerbinInitial = DateTime.ParseExact(strSavedKerbinDateTime, strDateTimeFormat, CultureInfo.InvariantCulture);
-            }
-            strConfigInitialDateTime = dtKerbinInitial.ToString (strDateTimeFormat);
-
-            //isMinimalisticView = Config.GetValue<bool> ("MinimalisticView", false);
-            //isKerbinTimeScale = Config.GetValue<bool> ("UseKerbinTimeScale", false);
-           // doOverrideMETDisplay = Config.GetValue<bool> ("OverrideMETDisplay", false);
-            //doShowSystemTime = Config.GetValue<bool> ("ShowSystemTime", false);
-            doShowCalendarWindow = Config.GetValue ("ShowCalendar", false);
-        }
-
-        /// <summary>
-        /// Loads Time Warp button textures
-        /// </summary>
-        public void loadTextures() {
-            /* WIP
-            LoadImage(out timeModeBtnMET_0, "MET_0.png");
-            LoadImage(out timeModeBtnMET_1, "MET_1.png");
-
-            LoadImage(out timeModeBtnUT_0, "UT_0.png");
-            LoadImage(out timeModeBtnUT_1, "UT_1.png");
-
-            LoadImage(out timeModeBtnKT_0, "KT_0.png");
-            LoadImage(out timeModeBtnKT_1, "KT_1.png");
-            */
         }
 
         /// <summary>
@@ -79,22 +89,19 @@ namespace KSPCalendar
         /// </summary>
         public void saveConfig(bool doDestroy = false)
         {
-            KSP.IO.PluginConfiguration Config = KSP.IO.PluginConfiguration.CreateForType<Calendar> ();
 
-            Config.SetValue ("PluginVersion", dblPluginVersion);
-            Config.SetValue ("CalendarWindowPosition", posCalendarWindow);
-            Config.SetValue ("MiniCalendarWindowPosition", posMiniCalendarWindow);
-            Config.SetValue ("InitialKerbinDateTime", dtKerbinInitial.ToString (strDateTimeFormat));
-            Config.SetValue ("DateTimeFormat", strDateTimeFormat);
-            //Config.SetValue ("OverrideMETDisplay", doOverrideMETDisplay);
-            //Config.SetValue ("MinimalisticView", isMinimalisticView);
-            //Config.SetValue ("UseKerbinTimeScale", isKerbinTimeScale);
-            //Config.SetValue ("ShowSystemTime", doShowSystemTime);
-            Config.SetValue ("ShowCalendar", doShowCalendarWindow);
-
-            Config.save ();
+            ConfigNode file = new ConfigNode();
+            ConfigNode node = new ConfigNode();
+            
+            node.AddValue("CalendarWindowPosition", RectToString(posCalendarWindow));
+            node.AddValue("MiniCalendarWindowPosition", RectToString(posMiniCalendarWindow));
+            node.AddValue("InitialKerbinDateTime", dtKerbinInitial.ToString(strDateTimeFormat));
+            node.AddValue("DateTimeFormat", strDateTimeFormat);
+            node.AddValue("ShowCalendar", doShowCalendarWindow);
+            file.AddNode("KSPCalendar", node);
+            file.Save(GetConfigFileName );
         }
-
+ 
         /// <summary>
         /// Determines whether the current view is a valid scene for us.
         /// </summary>
@@ -114,7 +121,7 @@ namespace KSPCalendar
         {
             double dblUniversalTime = Planetarium.GetUniversalTime ();
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalendarSettings>().isKerbinTimeScale) {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().isKerbinTimeScale) {
                 dtKerbinInitial = dtKerbinInitial.Date;
                 dblUniversalTime = (dblUniversalTime + 11700.0 - ((21600.0 / 9203544.6) * dblUniversalTime)) * 4;
             }

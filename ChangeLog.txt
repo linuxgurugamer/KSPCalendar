@@ -1,0 +1,15 @@
+# KSPCalendar
+
+LGG release
+
+Changelog
+
+1.6
+	updated for 1.5
+	Added Toolbarcontroller & clickThroughBlocker
+	Moved settings into KSP settings page
+	Added option to choose between toolbars
+	Added fontsize adjustment
+	Added bold font
+	Optimized a bit to only initialize  GUIStyles one time instead of every OnGUI
+	Changed config saves from an XML file to a cfg file
