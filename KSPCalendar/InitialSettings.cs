@@ -26,8 +26,9 @@ namespace KSPCalendar
         private DateTime dtKerbinInitial = new DateTime(1980, 1, 1, 0, 0, 0),
             dtKerbinCurrent = new DateTime(1980, 1, 1, 0, 0, 0);
 
-        private String strDateTimeFormat = "yyyy/MM/dd HH:mm:ss", strConfigInitialDateTime = "", 
-            strConfigDateTimeFormat = "";
+        string strDateTimeFormat = "yyyy/MM/dd HH:mm:ss";
+        string strConfigInitialDateTime = "";
+        string strConfigDateTimeFormat = "";
 
         /* WIP
         private Texture2D timeModeBtnMET_0, timeModeBtnMET_1, timeModeBtnUT_0, timeModeBtnUT_1, timeModeBtnKT_0, timeModeBtnKT_1;

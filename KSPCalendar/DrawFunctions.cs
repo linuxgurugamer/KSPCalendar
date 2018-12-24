@@ -25,35 +25,42 @@ namespace KSPCalendar
 {
     public partial class Calendar
     {
-       // private bool isMinimalisticView = false;
+        // private bool isMinimalisticView = false;
         //private bool isKerbinTimeScale = false;
-        //private bool doShowConfigWindow = false;
-       // private bool doOverrideMETDisplay = false;
+#if true
+        private bool doShowConfigWindow = false;
+        private bool doShowHelpWindow = false;
+#endif
+        // private bool doOverrideMETDisplay = false;
         private bool doShowCalendarWindow = false;
         //private bool doShowSystemTime = false;
         private bool doDrawDefaultWindow = true;
 
         private Rect posCalendarWindow;
         private Rect posMiniCalendarWindow;
-        //private Rect posConfigWindow;
+        private Rect posConfigWindow;
+        private Rect posHelpWindow = new Rect(0, 0, 400, 600);
 
         // private FlightGlobals flightUICtrl;
 
-/* WIP
-private TimeWarp mTimewarpObject;
-private int metState = 0;
-*/
+        /* WIP
+        private TimeWarp mTimewarpObject;
+        private int metState = 0;
+        */
 
-// ****
+        // ****
 
         /// <summary>
         /// Draws all windows depending on settings.
         /// </summary>
         private void drawWindows()
         {
-            //if (doShowConfigWindow)
-            //    posConfigWindow = ClickThroughBlocker.GUILayoutWindow (3, posConfigWindow, drawSettingsWindow, "Settings", styleConfigWindow);
-
+#if true
+            if (doShowConfigWindow)
+                posConfigWindow = ClickThruBlocker.GUILayoutWindow(3, posConfigWindow, drawSettingsWindow, "Settings", styleConfigWindow);
+            if (doShowHelpWindow)
+                posHelpWindow = ClickThruBlocker.GUILayoutWindow(35, posHelpWindow, drawHelpWindow, "Help");
+#endif
             if (!doShowCalendarWindow)
                 return;
 
@@ -134,7 +141,7 @@ private int metState = 0;
                 if (met != null)
                 {
                     met.text.text = dtKerbinCurrent.ToString(strDateTimeFormat);
-                    Debug.Log("met.text.test = " + dtKerbinCurrent.ToString(strDateTimeFormat));
+                    //Debug.Log("met.text.test = " + dtKerbinCurrent.ToString(strDateTimeFormat));
                 }
                 //                flightUICtrl.met.text = dtKerbinCurrent.ToString (strDateTimeFormat);
             }
@@ -207,11 +214,18 @@ private int metState = 0;
 
             GUI.DragWindow();
         }
-#if false
+#if true
         /// <summary>
         /// Draws the settings window.
         /// </summary>
-        private void drawSettingsWindow(int id) {
+        private void drawSettingsWindow(int id)
+        {
+ 
+            if (GUI.Button(new Rect(posConfigWindow.width - 24, 4, 20, 20), "?", closeButtonStyle))
+            {
+                doShowHelpWindow = true;
+            }
+
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             GUILayout.Box("Initial Date", styleBoxWhite);
@@ -232,40 +246,53 @@ private int metState = 0;
 
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            doOverrideMETDisplay = GUILayout.Toggle(doOverrideMETDisplay, "Override MET timer in flight mode", styleToggle, GUILayout.ExpandWidth(true));
+            HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().doOverrideMETDisplay = GUILayout.Toggle(HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().doOverrideMETDisplay, "Override MET timer in flight mode", styleToggle, GUILayout.ExpandWidth(true));
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            isMinimalisticView = GUILayout.Toggle(isMinimalisticView, "Minimalistic view", styleToggle, GUILayout.ExpandWidth(true));
+            HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().isMinimalisticView = GUILayout.Toggle(HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().isMinimalisticView, "Minimalistic view", styleToggle, GUILayout.ExpandWidth(true));
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            isKerbinTimeScale = GUILayout.Toggle(isKerbinTimeScale, "Kerbin time scale (6 hours day)", styleToggle, GUILayout.ExpandWidth(true));
+            HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().isKerbinTimeScale = GUILayout.Toggle(HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().isKerbinTimeScale, "Kerbin time scale (6 hours day)", styleToggle, GUILayout.ExpandWidth(true));
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            doShowSystemTime = GUILayout.Toggle(doShowSystemTime, "Show system time", styleToggle, GUILayout.ExpandWidth(true));
+            HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().doShowSystemTime = GUILayout.Toggle(HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().doShowSystemTime, "Show system time", styleToggle, GUILayout.ExpandWidth(true));
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-
+            GUILayout.FlexibleSpace();
             // ****
-            
+            try
+            {
+                var d = DateTime.ParseExact(strConfigInitialDateTime, strConfigDateTimeFormat, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Initial date does not match specified date format", styleMessageLabel);
+                GUILayout.EndHorizontal();
+                GUI.enabled = false;
+               
+            }
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             if (GUILayout.Button ("OK", styleDialogButton, GUILayout.ExpandWidth (true))) {
-                doShowConfigWindow = !doShowConfigWindow;
+                doShowConfigWindow = false;
                 strDateTimeFormat = strConfigDateTimeFormat;
+                //Debug.Log("strConfigInitialDateTime: " + strConfigInitialDateTime + ", strDateTimeFormat: " + strDateTimeFormat);
                 dtKerbinInitial = DateTime.ParseExact(strConfigInitialDateTime, strDateTimeFormat, CultureInfo.InvariantCulture);
                 saveConfig();
             }
+            GUI.enabled = true;
             if (GUILayout.Button ("Cancel", styleDialogButton, GUILayout.ExpandWidth (true))) {
-                doShowConfigWindow = !doShowConfigWindow;
+                doShowConfigWindow = false;
             }
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();

@@ -82,6 +82,22 @@ namespace KSPCalendar
                     node.TryGetValue("ShowCalendar", ref doShowCalendarWindow);
                 }
             }
+            strConfigDateTimeFormat = strDateTimeFormat;
+            strConfigInitialDateTime = dtKerbinInitial.ToString(strDateTimeFormat);
+#if false
+            if (strSavedDateTimeFormat != null)
+            {
+                strDateTimeFormat = strSavedDateTimeFormat;
+            }
+            strConfigDateTimeFormat = strDateTimeFormat;
+
+                            
+            if (strSavedKerbinDateTime != null)
+            {
+                dtKerbinInitial = DateTime.ParseExact(strSavedKerbinDateTime, strDateTimeFormat, CultureInfo.InvariantCulture);
+            }
+            strConfigInitialDateTime = dtKerbinInitial.ToString(strDateTimeFormat);
+#endif
         }
 
         /// <summary>

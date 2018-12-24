@@ -3,6 +3,11 @@
 LGG release
 
 Changelog
+1.6.1
+	Added back in the settings window, accessable via right-click of button
+	Added check to settings window for the initial date not matching the display format
+	Added a help screen which shows the valid date formatting items
+	Removed log spam
 
 1.6
 	updated for 1.5
@@ -13,3 +18,4 @@ Changelog
 	Added bold font
 	Optimized a bit to only initialize  GUIStyles one time instead of every OnGUI
 	Changed config saves from an XML file to a cfg file
+

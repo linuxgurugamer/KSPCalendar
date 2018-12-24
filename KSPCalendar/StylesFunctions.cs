@@ -26,25 +26,28 @@ namespace KSPCalendar
     public partial class Calendar
     {
         private static GUIStyle
-            styleCalendarWindow, //styleConfigWindow,
-            styleBoxWhite, styleBoxYellow,
-            //styleToggle,
-            styleMinimalisticLabel;
-        //styleDialogButton;
+            styleCalendarWindow, 
+            styleConfigWindow,
+            styleBoxWhite, 
+            styleBoxYellow,
+            styleToggle,
+            styleMinimalisticLabel,
+            styleMessageLabel,
+            styleLabel,
+            styleDialogButton,
+            closeButtonStyle;
+
         bool stylesInitted = false;
         bool oldSkin, oldBold, olddoShowSystemTime;
         int oldFontSize;
-        // IButton tbButton;
-        //private IButton tbButtonCfg;
 
-        //ApplicationLauncherButton launcherButton = null;
         ToolbarControl toolbarControl;
 
 
         // ****
         void removeLauncherButtons()
         {
-            Debug.Log("removeLauncherButtons");
+            //Debug.Log("removeLauncherButtons");
             toolbarControl.OnDestroy();
             Destroy(toolbarControl);
             toolbarControl = null;
@@ -53,10 +56,13 @@ namespace KSPCalendar
         internal const string MODID = "KSPCalendar_NS";
         internal const string MODNAME = "KSPCalendar";
 
-        void OnGUIApplicationLauncherReady()
+        /// <summary>
+        /// Initializes our button 
+        /// </summary>
+        void initToolbarButtons()
         {
             toolbarControl = gameObject.AddComponent<ToolbarControl>();
-            toolbarControl.AddToAllToolbars(showWindow, hideWindow,
+            toolbarControl.AddToAllToolbars(null, null,
                 ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.FLIGHT |
                 ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.VAB |
                 ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.TRACKSTATION,
@@ -68,29 +74,17 @@ namespace KSPCalendar
                 "KSPCalendar/PluginData/Icons/KSPC_Button_24",
                 "KSPCalendar"
             );
+            toolbarControl.AddLeftRightClickCallbacks(ToggleWindow, ToggleConfig);
         }
-        internal void showWindow()  // triggered by application launcher
-        {
-            doShowCalendarWindow = !doShowCalendarWindow;
-            //launcherButton.SetTexture()
-        }
-
-        internal void hideWindow() // triggered by application launcher
+        internal void ToggleWindow()  // triggered by application launcher
         {
             doShowCalendarWindow = !doShowCalendarWindow;
         }
 
-        /// <summary>
-        /// Initializes our button for the Toolbar Plugin.
-        /// </summary>
-        private void initToolbarButtons()
+        internal void ToggleConfig() // triggered by application launcher
         {
-            {
-                OnGUIApplicationLauncherReady();
-
-            }
+            doShowConfigWindow = !doShowConfigWindow;
         }
-
 
         /// <summary>
         /// Initializes the styles for our windows, boxes and buttons.
@@ -117,6 +111,13 @@ namespace KSPCalendar
 
                 // ****
 
+                styleConfigWindow = new GUIStyle(GUI.skin.window);
+                styleConfigWindow.fixedWidth = 230;
+                styleConfigWindow.fixedHeight = 240 + 2* 28 * HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize / 11;
+                styleConfigWindow.fontSize = HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize;
+
+                // ****
+
                 styleMinimalisticLabel = new GUIStyle(GUI.skin.label);
                 styleMinimalisticLabel.fixedWidth = (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().doShowSystemTime ? 300 : 150) * HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize / 11;
                 styleMinimalisticLabel.fixedHeight = 30 * HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize / 11;
@@ -134,6 +135,24 @@ namespace KSPCalendar
 
                 // ****
 
+                styleMessageLabel = new GUIStyle(GUI.skin.label);
+                //styleLabel.normal.textColor = Color.white;
+                styleMessageLabel.fontStyle = FontStyle.Normal;
+                styleMessageLabel.fontSize = HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize + 3;
+                styleMessageLabel.alignment = TextAnchor.MiddleCenter;
+                styleMessageLabel.wordWrap = true;
+
+                // ****
+
+                styleLabel = new GUIStyle(GUI.skin.label);
+                styleLabel.fontStyle = FontStyle.Normal;
+                styleLabel.fontSize = HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize;
+                styleLabel.alignment = TextAnchor.MiddleCenter;
+                styleLabel.wordWrap = true;
+                //styleLabel.fixedHeight = 28 * HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize / 11;
+
+                // ****
+
                 styleBoxYellow = new GUIStyle(GUI.skin.box);
                 styleBoxYellow.normal.textColor = Color.yellow;
                 styleBoxYellow.fontStyle = FontStyle.Normal;
@@ -142,7 +161,34 @@ namespace KSPCalendar
                 styleBoxYellow.wordWrap = true;
                 styleBoxYellow.fixedWidth = 120 * HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize / 11;
                 styleBoxYellow.fixedHeight = 28 * HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().fontSize / 11;
-                
+
+                // ****
+
+                styleToggle = new GUIStyle(GUI.skin.toggle);
+                styleToggle.normal.textColor = Color.white;
+                styleToggle.fontStyle = FontStyle.Normal;
+                styleToggle.fontSize = 11;
+                styleToggle.wordWrap = false;
+
+                // ****
+
+                styleDialogButton = new GUIStyle(GUI.skin.button);
+                styleDialogButton.normal.textColor = Color.white;
+                styleDialogButton.hover.textColor = Color.yellow;
+                styleDialogButton.fontStyle = FontStyle.Normal;
+                styleDialogButton.fontSize = 11;
+                styleDialogButton.alignment = TextAnchor.MiddleCenter;
+                styleDialogButton.wordWrap = true;
+
+                // ****
+
+                closeButtonStyle = new GUIStyle(GUI.skin.button);
+                closeButtonStyle.padding = new RectOffset(5, 5, 3, 0);
+                closeButtonStyle.margin = new RectOffset(1, 1, 1, 1);
+                closeButtonStyle.stretchWidth = false;
+                closeButtonStyle.stretchHeight = false;
+                closeButtonStyle.alignment = TextAnchor.MiddleCenter;
+
                 // ****
 
                 if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().bold)

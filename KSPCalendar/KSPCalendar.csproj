@@ -36,6 +36,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="HelpWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Calendar.cs" />
     <Compile Include="CalendarFunctions.cs" />
