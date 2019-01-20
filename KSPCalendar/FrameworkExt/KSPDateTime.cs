@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 using System.Text.RegularExpressions;
 
@@ -94,11 +95,11 @@ namespace KSPPluginFramework
 					return DayOfYear;
 
 				Int32 monthMaxDay = 0;
-				for (int i = 0; i < KSPDateStructure.MonthCount; i++)
+				for (int i = 1; i < KSPDateStructure.MonthCount; i++)
 				{
 					if (DayOfYear <= monthMaxDay + KSPDateStructure.Months[i].Days)
-						return DayOfYear - monthMaxDay;
-				}
+						return DayOfYear - KSPDateStructure.Months[i-1].Days;
+                }
 				return DayOfYear;
 			}
 		}
@@ -357,7 +358,7 @@ namespace KSPPluginFramework
                         }
 						break;
 					case 'd':
-						format = format.Substring(0, mIndex) + Day.ToString("D" + mLength) + format.Substring(mIndex + mLength);
+                        format = format.Substring(0, mIndex) + Day.ToString("D" + mLength) + format.Substring(mIndex + mLength);
 						break;
 					case 'h':
 						//how to do this one AM/PM Hours

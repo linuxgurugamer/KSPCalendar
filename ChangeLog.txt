@@ -4,6 +4,10 @@ LGG release
 
 Changelog
 
+1.6.3
+	Really fixed date display (now shows Kerbin month & day of month correctly)
+	Updated icons to allow background to be transparent
+
 1.6.2
 	Fixed bug where  it couldn't load saved datetime formats
 	Fixed date/time values to be correct for Kerbin's year

@@ -43,7 +43,7 @@ namespace KSPCalendar
                     for (int i = 1; i < monthsInYear + 1; i++)
                     {
                         x += monthLen;
-                        //if (x > 7) x -= 7f;
+                        //if (x >= 7) x -= 7f;
                         KSPMonth m1 = new KSPMonth(i.ToString(), (int)x);
                         Months.Add(m1);
                         Debug.Log("month list, i: " + i + ", x: " + ((int)x).ToString());
@@ -57,6 +57,7 @@ namespace KSPCalendar
                 return lastDateTimeReturned;
             secKerbinInitial = Calendar.Instance.dtKerbinInitial.Year * yearLen;
             dt = new KSPDateTime(Planetarium.GetUniversalTime() + secKerbinInitial);
+
             //KSPDateStructure.Months = Months;
             lastTimeChecked = Planetarium.GetUniversalTime();
             lastDateTimeReturned = dt.ToString(format);
