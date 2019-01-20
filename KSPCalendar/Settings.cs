@@ -26,8 +26,10 @@ namespace KSPCalendar
             toolTip = "Just the date/time, nothing else")]
         public bool isMinimalisticView = false;
 
+#if false
         [GameParameters.CustomParameterUI("Kerbin time scale (6 hours day)")]
         public bool isKerbinTimeScale = true;
+#endif
 
         [GameParameters.CustomParameterUI("Show system time")]
         public bool doShowSystemTime = false;

@@ -73,16 +73,21 @@ namespace KSPCalendar
     [KSPAddon(KSPAddon.Startup.AllGameScenes, true)]
     public partial class Calendar : MonoBehaviour
     {
+        internal static Calendar Instance;
+
         /// <summary>
         /// Called when the Plugin is loaded.
         /// </summary>
         public void Awake()
         {
+            Instance = this;
             loadConfig();
             initToolbarButtons ();
             DontDestroyOnLoad(this);
             //loadTextures ();
         }
+
+        KSPDateTimeFormatter kspDateTimeFormatter;
 
         /// <summary>
         /// Called once everything in the scene (including other plugins) have loaded,
@@ -91,6 +96,7 @@ namespace KSPCalendar
         public void Start()
         {
             print ("KSPCalendar Plugin Started [Version " + dblPluginVersion.ToString() + "]");
+            kspDateTimeFormatter = new KSPDateTimeFormatter();
         }
 
         /// <summary>

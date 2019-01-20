@@ -23,7 +23,7 @@ namespace KSPCalendar
     {
         private double dblPluginVersion = 1.5;
 
-        private DateTime dtKerbinInitial = new DateTime(1980, 1, 1, 0, 0, 0),
+        internal DateTime dtKerbinInitial = new DateTime(1980, 1, 1, 0, 0, 0),
             dtKerbinCurrent = new DateTime(1980, 1, 1, 0, 0, 0);
 
         string strDateTimeFormat = "yyyy/MM/dd HH:mm:ss";

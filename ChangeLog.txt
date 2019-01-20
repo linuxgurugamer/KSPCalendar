@@ -3,6 +3,15 @@
 LGG release
 
 Changelog
+
+1.6.2
+	Fixed bug where  it couldn't load saved datetime formats
+	Fixed date/time values to be correct for Kerbin's year
+		Added code from TriggerAu, the FrameworkExt.  Copyright in top of each file
+	Removed option for 6/24 hour days, now uses game setting
+	Changed the initial date to only use the year
+
+
 1.6.1
 	Added back in the settings window, accessable via right-click of button
 	Added check to settings window for the initial date not matching the display format

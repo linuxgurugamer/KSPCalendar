@@ -20,6 +20,7 @@ using System.Globalization;
 using KSP.IO;
 using UnityEngine;
 
+
 namespace KSPCalendar
 {
     public partial class Calendar
@@ -77,8 +78,10 @@ namespace KSPCalendar
                     posMiniCalendarWindow = StringToRect(s);
                     s = "";
                     node.TryGetValue("InitialKerbinDateTime", ref s);
-                    dtKerbinInitial = DateTime.ParseExact(s, strDateTimeFormat, CultureInfo.InvariantCulture);
                     node.TryGetValue("DateTimeFormat", ref strDateTimeFormat);
+
+                    dtKerbinInitial = DateTime.ParseExact(s, strDateTimeFormat, CultureInfo.InvariantCulture);
+         
                     node.TryGetValue("ShowCalendar", ref doShowCalendarWindow);
                 }
             }
@@ -129,6 +132,7 @@ namespace KSPCalendar
             return false;
         }
 
+#if false
         /// <summary>
         /// Gets the current kerbin date time.
         /// It is basically just InitialKerbinDateTime + UniversalTime passed in seconds since the game was created.
@@ -137,13 +141,15 @@ namespace KSPCalendar
         {
             double dblUniversalTime = Planetarium.GetUniversalTime ();
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().isKerbinTimeScale) {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().isKerbinTimeScale) {
                 dtKerbinInitial = dtKerbinInitial.Date;
                 dblUniversalTime = (dblUniversalTime + 11700.0 - ((21600.0 / 9203544.6) * dblUniversalTime)) * 4;
             }
 
             dtKerbinCurrent = dtKerbinInitial.AddSeconds (dblUniversalTime);
         }
+#endif
+ 
 
         /// <summary>
         /// Loads an image.

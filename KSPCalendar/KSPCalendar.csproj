@@ -36,7 +36,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="FrameworkExt\Extensions.cs" />
+    <Compile Include="FrameworkExt\ExtensionsUnity.cs" />
+    <Compile Include="FrameworkExt\KSPDateStructure.cs" />
+    <Compile Include="FrameworkExt\KSPDateTime.cs" />
+    <Compile Include="FrameworkExt\KSPTimeSpan.cs" />
     <Compile Include="HelpWindow.cs" />
+    <Compile Include="KSPDateTimeFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Calendar.cs" />
     <Compile Include="CalendarFunctions.cs" />
