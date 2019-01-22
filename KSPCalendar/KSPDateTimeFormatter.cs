@@ -18,7 +18,7 @@ namespace KSPCalendar
 
         double lastTimeChecked = -1;
         string lastDateTimeReturned = "";
-        KSPDateTime dt;
+        
         double secKerbinInitial;
             
         //List<KSPMonth> Months;
@@ -46,7 +46,7 @@ namespace KSPCalendar
                         //if (x >= 7) x -= 7f;
                         KSPMonth m1 = new KSPMonth(i.ToString(), (int)x);
                         Months.Add(m1);
-                        Debug.Log("month list, i: " + i + ", x: " + ((int)x).ToString());
+                        //Debug.Log("month list, i: " + i + ", x: " + ((int)x).ToString());
                     }
                     KSPDateStructure.Months = Months;
                 }
@@ -55,12 +55,17 @@ namespace KSPCalendar
             }
             if (Math.Abs(Planetarium.GetUniversalTime() - lastTimeChecked) < 1)
                 return lastDateTimeReturned;
-            secKerbinInitial = Calendar.Instance.dtKerbinInitial.Year * yearLen;
-            dt = new KSPDateTime(Planetarium.GetUniversalTime() + secKerbinInitial);
+
+            //secKerbinInitial = (Calendar.Instance.dtKerbinInitial.Year - 1) * yearLen;
+            secKerbinInitial = (Calendar.Instance.dtKerbinInitial.Year - 1) * Math.Truncate(daysInYear) * dayLen;
+
+            lastTimeChecked = Planetarium.GetUniversalTime();
+            var dt = new KSPDateTime(lastTimeChecked + secKerbinInitial);
 
             //KSPDateStructure.Months = Months;
-            lastTimeChecked = Planetarium.GetUniversalTime();
+            
             lastDateTimeReturned = dt.ToString(format);
+
             return lastDateTimeReturned;
 
         }

@@ -4,6 +4,12 @@ LGG release
 
 Changelog
 
+1.6.3.1
+	Fixed initial year time to not need to be decremented by 1
+	Changed back to 426 days/year, not the 426.08
+	Fixed calculation of the offset for the initial year
+	Removed some more debugging statements
+
 1.6.3
 	Really fixed date display (now shows Kerbin month & day of month correctly)
 	Updated icons to allow background to be transparent

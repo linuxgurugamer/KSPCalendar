@@ -91,10 +91,11 @@ namespace KSPPluginFramework
 		}
 		private Int32 DayOfMonth {
 			get {
-				if (KSPDateStructure.MonthCount < 1)
+				if (KSPDateStructure.MonthCount < 1 || DayOfYear <= KSPDateStructure.Months[0].Days)
 					return DayOfYear;
 
 				Int32 monthMaxDay = 0;
+
 				for (int i = 1; i < KSPDateStructure.MonthCount; i++)
 				{
 					if (DayOfYear <= monthMaxDay + KSPDateStructure.Months[i].Days)
