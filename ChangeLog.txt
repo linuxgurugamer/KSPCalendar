@@ -4,6 +4,9 @@ LGG release
 
 Changelog
 
+1.7.0
+	Updated for KSP 1.8
+
 1.6.4
 	Added InstallChecker
 	Updated AssemblyVersion.tt
@@ -24,7 +27,6 @@ Changelog
 		Added code from TriggerAu, the FrameworkExt.  Copyright in top of each file
 	Removed option for 6/24 hour days, now uses game setting
 	Changed the initial date to only use the year
-
 
 1.6.1
 	Added back in the settings window, accessable via right-click of button
