@@ -134,7 +134,7 @@ namespace KSPCalendar
 
         private void LateUpdate()
         {
-            if (HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().doOverrideMETDisplay && HighLogic.LoadedSceneIsFlight)
+            if (HighLogic.CurrentGame != null && HighLogic.CurrentGame.Parameters.CustomParams<KSPCalSettings>().doOverrideMETDisplay && HighLogic.LoadedSceneIsFlight)
             {
                 //getCurrentKerbinDateTime();
                 string kspDatetime = kspDateTimeFormatter.getDateTimeStr(strDateTimeFormat);
